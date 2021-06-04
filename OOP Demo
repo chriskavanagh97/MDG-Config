@@ -1,0 +1,121 @@
+Demo prorgam for creating methods, classes and objects in ABAP object oriented programming.
+
+
+REPORT zbc401_09_demo.
+
+
+CLASS icl_vehicle DEFINITION.
+  PUBLIC SECTION.
+*Here we have added code for definin the METHODS in PUBLIC Sectin
+    METHODS:
+      set_attributes
+        IMPORTING
+          iv_make  TYPE s_make
+          iv_model TYPE s_model,
+      display_attributes.
+
+    CLASS-METHODS display_n_o_vehicles.
+
+*Calling functional methods
+    CLASS-METHODS get_n_o_vehicles RETURNING VALUE(rv_count) TYPE i.
+
+
+
+
+  PRIVATE SECTION.
+    DATA: my_make  TYPE s_make,
+          my_model TYPE s_model.
+*Adding code for declaring attributes to the private section of the definition
+
+
+    CLASS-DATA gv_n_o_vehicles TYPE i.
+
+ENDCLASS.
+
+CLASS icl_vehicle IMPLEMENTATION.
+
+*Here we are creating the PUBLIC METHOD set attributes
+  METHOD set_attributes.
+    my_make = iv_make.
+    my_model = iv_model.
+    gv_n_o_vehicles = gv_n_o_vehicles + 1.
+  ENDMETHOD.
+
+* Here are implementing the cmethod display_atributes
+  METHOD display_attributes.
+    WRITE:/ 'Make', my_model,
+          / 'Model', my_model.
+
+  ENDMETHOD.
+
+*Here we are implementing the static METHOD display vehicles.
+  METHOD display_n_o_vehicles.
+    WRITE: 'Number of Vehicles:', gv_n_o_vehicles.
+  ENDMETHOD.
+
+*Adding code for implementing the method GET_N_O_VEHICLES
+  METHOD get_gv_n_o_Vehicles.
+
+    rv_count = gv_n_o_vehicles.
+
+  ENDMETHOD.
+
+ 
+
+ENDCLASS.
+
+*DATA:
+*      go_vehicle1 type ref to icl_vehicle,
+*      go_vehicle2 type ref to icl_vehicle.
+*
+*Start-OF-SELECTION.
+*
+*Create Object go_vehicle1.
+*create Object go_vehicle2.
+*
+*go_vehicle2 = go_vehicle1.
+
+*Code for creating objects and storing the reference in the internal table.
+
+DATA:
+  go_vehicle      TYPE REF TO icl_vehicle,
+  gt_vehicles     TYPE TABLE OF REF TO icl_vehicles,
+  gv_n_o_vehicles TYPE i.
+
+START-OF-SELECTION.
+
+*Calling the static methods.
+  icl_vehicle=>display_n_o_vehicles( ).
+
+
+  CREATE OBJECT go_vehicle.
+*Calling the instance method to set the value of the object
+  go_vehicle->set_attributes(
+    iv_make = 'Audi'
+    iv_model =  'A3' ).
+  APPEND go_vehicle TO gt_vehicles.
+
+
+  CREATE OBJECT go_vehicle.
+  go_vehicle->set_attributes(
+    iv_make = 'BMW'
+    iv_model = '305i' ).
+  APPEND go_vehicle TO gt_vehicles.
+
+
+  CREATE OBJECT go_vehicle.
+  go_vehicle->set_attributes(
+  iv_make = 'Porsche'
+  iv_model = '911' ).
+  APPEND go_vehicle TO gt_vehicles.
+
+
+
+  LOOP AT gt_vehicles INTO go_vehicle.
+    go_vehicle->display_attributes( ).
+  ENDLOOP.
+
+  "icl_vehicle=display_n_o_vehicles( ).
+
+  gv_n_o_vehicles = icl_vehicles=>get_n_o_vehicles( ).
+  WRITE:'Number of Vehicles:', gv_n_o_vehicles.
